@@ -1,0 +1,109 @@
+.game-card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.game-card {
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.game-card--active {
+  cursor: pointer;
+}
+
+.game-card--active:hover {
+  border-color: var(--color-primary);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(255, 107, 53, 0.15);
+}
+
+.game-card--active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--gradient-primary);
+  border-radius: 4px 4px 0 0;
+}
+
+.game-card--soon {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.game-card__icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.game-card__title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.game-card__desc {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin: 0.25rem 0 0;
+  line-height: 1.5;
+}
+
+.game-card__tags {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+
+.tag {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: 99px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.tag--logic {
+  background: #e8f4fd;
+  color: #1976d2;
+}
+
+.tag--daily {
+  background: #fff3e0;
+  color: #e65100;
+}
+
+.tag--soon {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.tag--words {
+  background: #f3e8ff;
+  color: #7c3aed;
+}
+
+.tag--puzzle {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.tag--creative {
+  background: #fef2f2;
+  color: #dc2626;
+}
