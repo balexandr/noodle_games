@@ -66,25 +66,25 @@ function Home() {
       {/* About */}
       <section id="about" className="about">
         <div className="container">
-          <h2 className="section-title">What's NoodleGames?</h2>
+          <h2 className="section-title">Why "Noodle"?</h2>
           <p className="about__intro">
-            We make bite-sized brain games you can play in minutes. New challenges drop daily – no sign-ups, no installs. Just open and play.
+            Because you're using your noodle. These are the games you play when you're on the toilet, waiting for coffee, or pretending to work. No logins. No ads. No guilt. Just a couple minutes of your brain doing something fun.
           </p>
           <div className="about__features">
             <div className="feature">
-              <span className="feature__icon">⚡</span>
-              <h3>Quick to Play</h3>
-              <p>Games take 2-5 minutes. Perfect for a break.</p>
+              <span className="feature__icon">🚽</span>
+              <h3>Toilet-length</h3>
+              <p>Every game is designed to finish before your legs go numb.</p>
             </div>
             <div className="feature">
               <span className="feature__icon">🧠</span>
-              <h3>Brain Food</h3>
-              <p>Puzzles that keep your mind sharp and entertained.</p>
+              <h3>Actually fun</h3>
+              <p>Not "educational game" fun. Real fun. The kind where you accidentally play 3 rounds.</p>
             </div>
             <div className="feature">
-              <span className="feature__icon">📅</span>
-              <h3>Fresh Daily</h3>
-              <p>New challenges every day. Come back for more.</p>
+              <span className="feature__icon">🔥</span>
+              <h3>New stuff regularly</h3>
+              <p>We keep building weird little games. They show up here when they're ready.</p>
             </div>
           </div>
         </div>
