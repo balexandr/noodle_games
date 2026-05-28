@@ -17,13 +17,4 @@ export const games = [
     tags: ['Words', 'Daily'],
     url: 'https://balexandr.github.io/odd_one_out',
   },
-  {
-    id: 'chain-reaction',
-    title: 'Chain Reaction',
-    description: 'Change one letter at a time, but each word must connect thematically to the next. One clean path, tons of dead ends.',
-    icon: '🔗',
-    status: 'coming-soon',
-    tags: ['Words', 'Logic', 'Soon'],
-    url: null,
-  },
 ]
