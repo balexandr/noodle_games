@@ -3,7 +3,7 @@ import { games } from '../data/games'
 import './Home.css'
 
 function Home() {
-  const todaysGame = games.find(g => g.status === 'active')
+  const todaysGame = games.findLast(g => g.status === 'active') || games.find(g => g.status === 'active')
 
   return (
     <>
