@@ -1,4 +1,5 @@
 import GameCard from '../components/GameCard'
+import { ToiletIcon, JoystickIcon, RocketIcon } from '../components/FeatureIcons'
 import { games } from '../data/games'
 import './Home.css'
 
@@ -38,7 +39,7 @@ function Home() {
           <div className="daily__card">
             <div className="daily__badge">TODAY'S CHALLENGE</div>
             <div className="daily__info">
-              <h2 className="daily__title">{todaysGame.icon} {todaysGame.title}</h2>
+              <h2 className="daily__title">{todaysGame.title}</h2>
               <p className="daily__desc">{todaysGame.description}</p>
             </div>
             <a href={todaysGame.url} target="_blank" rel="noopener noreferrer" className="btn btn--play">
@@ -72,17 +73,17 @@ function Home() {
           </p>
           <div className="about__features">
             <div className="feature">
-              <span className="feature__icon">🚽</span>
+              <span className="feature__icon"><ToiletIcon /></span>
               <h3>Toilet-length</h3>
               <p>Every game is designed to finish before your legs go numb.</p>
             </div>
             <div className="feature">
-              <span className="feature__icon">🧠</span>
+              <span className="feature__icon"><JoystickIcon /></span>
               <h3>Actually fun</h3>
               <p>Not "educational game" fun. Real fun. The kind where you accidentally play 3 rounds.</p>
             </div>
             <div className="feature">
-              <span className="feature__icon">🔥</span>
+              <span className="feature__icon"><RocketIcon /></span>
               <h3>New stuff regularly</h3>
               <p>We keep building weird little games. They show up here when they're ready.</p>
             </div>

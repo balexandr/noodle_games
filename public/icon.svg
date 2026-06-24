@@ -1,19 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#ff8f5e"/>
-      <stop offset="50%" style="stop-color:#ff6b35"/>
-      <stop offset="100%" style="stop-color:#e04a1a"/>
+      <stop offset="0%" stop-color="#ff8f5e"/>
+      <stop offset="100%" stop-color="#e04a1a"/>
     </linearGradient>
-    <radialGradient id="glow" cx="35%" cy="30%" r="60%">
-      <stop offset="0%" style="stop-color:rgba(255,255,255,0.25)"/>
-      <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
-    </radialGradient>
-    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
-      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#00000033"/>
-    </filter>
   </defs>
   <rect width="512" height="512" rx="96" fill="url(#bg)"/>
-  <rect width="512" height="512" rx="96" fill="url(#glow)"/>
-  <text x="256" y="370" font-size="280" text-anchor="middle" font-family="Arial" filter="url(#shadow)">🍜</text>
+  <line x1="176" y1="96"  x2="266" y2="296" stroke="white" stroke-width="28" stroke-linecap="round"/>
+  <line x1="336" y1="96"  x2="246" y2="296" stroke="white" stroke-width="28" stroke-linecap="round"/>
+  <circle cx="256" cy="186" r="22" fill="#ffc947"/>
+  <path d="M 126 276 Q 256 416 386 276" fill="none" stroke="white" stroke-width="25" stroke-linecap="round"/>
+  <line x1="126" y1="276" x2="386" y2="276" stroke="white" stroke-width="15" stroke-linecap="round" opacity="0.45"/>
+  <path d="M 166 301 Q 196 261 226 301 Q 256 341 286 301 Q 316 261 346 301" fill="none" stroke="#ffc947" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

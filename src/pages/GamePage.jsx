@@ -1,6 +1,19 @@
 import { useParams, Link } from 'react-router-dom'
 import { games } from '../data/games'
+import { OddOneOutIcon, SequenceIcon, ChainLinkIcon, ZeroInIcon } from '../components/GameIcons'
 import './GamePage.css'
+
+const pageIconComponents = {
+  'odd-one-out': OddOneOutIcon,
+  'sequence':    SequenceIcon,
+  'chain-link':  ChainLinkIcon,
+  'zero-in':     ZeroInIcon,
+}
+
+function PageIcon({ id, size }) {
+  const Icon = pageIconComponents[id];
+  return Icon ? <Icon size={size} /> : null;
+}
 
 function GamePage() {
   const { gameId } = useParams()
@@ -21,7 +34,11 @@ function GamePage() {
         <div className="game-page__header">
           <Link to="/" className="game-page__back">← Back</Link>
           <div className="game-page__title-row">
-            <span className="game-page__icon">{game.icon}</span>
+            <span className="game-page__icon">
+              {pageIconComponents[game.id]
+                ? <PageIcon id={game.id} size={48} />
+                : game.icon}
+            </span>
             <h1 className="game-page__title">{game.title}</h1>
           </div>
           <p className="game-page__desc">{game.description}</p>

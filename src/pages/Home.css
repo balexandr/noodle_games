@@ -220,9 +220,9 @@
 }
 
 .feature__icon {
-  font-size: 2rem;
   display: block;
   margin-bottom: 0.75rem;
+  line-height: 0;
 }
 
 .feature h3 {

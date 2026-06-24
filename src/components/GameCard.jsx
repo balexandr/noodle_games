@@ -1,11 +1,22 @@
 import './GameCard.css'
+import { OddOneOutIcon, SequenceIcon, ChainLinkIcon, ZeroInIcon } from './GameIcons'
+
+const iconComponents = {
+  'odd-one-out': OddOneOutIcon,
+  'sequence':    SequenceIcon,
+  'chain-link':  ChainLinkIcon,
+  'zero-in':     ZeroInIcon,
+}
 
 function GameCard({ game }) {
   const isActive = game.status === 'active' && game.url
+  const IconComponent = iconComponents[game.id]
 
   const card = (
     <div className={`game-card ${isActive ? 'game-card--active' : 'game-card--soon'}`}>
-      <div className="game-card__icon">{game.icon}</div>
+      <div className="game-card__icon">
+        {IconComponent ? <IconComponent /> : game.icon}
+      </div>
       <div className="game-card__body">
         <h3 className="game-card__title">{game.title}</h3>
         <p className="game-card__desc">{game.description}</p>

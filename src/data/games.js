@@ -26,4 +26,13 @@ export const games = [
     tags: ['Words', 'Daily'],
     url: 'https://balexandr.github.io/chain_link',
   },
+  {
+    id: 'zero-in',
+    title: 'Zero In',
+    description: 'Five classified clues. One target. Identify it before the intel runs out.',
+    icon: '🎯',
+    status: 'active',
+    tags: ['Trivia', 'Daily'],
+    url: 'https://balexandr.github.io/zero_in',
+  },
 ]
