@@ -7,6 +7,10 @@
 }
 
 .footer-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
   font-family: var(--font-display);
   font-weight: 600;
   font-size: 1.1rem;

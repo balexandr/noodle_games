@@ -5,7 +5,7 @@ export function OddOneOutIcon({ size = 40 }) {
       <circle cx="13" cy="13" r="9" fill="#d1d5db" />
       <circle cx="35" cy="13" r="9" fill="#d1d5db" />
       <circle cx="13" cy="35" r="9" fill="#d1d5db" />
-      <polygon points="35,26 44,44 26,44" fill="#ff6b35" />
+      <polygon points="35,26 44,44 26,44" fill="#84cc16" />
     </svg>
   );
 }
