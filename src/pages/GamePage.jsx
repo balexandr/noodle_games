@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import { games } from '../data/games'
-import { OddOneOutIcon, SequenceIcon, ChainLinkIcon, ZeroInIcon } from '../components/GameIcons'
+import { OddOneOutIcon, SequenceIcon, ChainLinkIcon, ZeroInIcon, KnotIcon } from '../components/GameIcons'
 import './GamePage.css'
 
 const pageIconComponents = {
@@ -8,6 +8,7 @@ const pageIconComponents = {
   'sequence':    SequenceIcon,
   'chain-link':  ChainLinkIcon,
   'zero-in':     ZeroInIcon,
+  'knot':        KnotIcon,
 }
 
 function PageIcon({ id, size }) {

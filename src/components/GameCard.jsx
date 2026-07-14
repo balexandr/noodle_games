@@ -1,11 +1,12 @@
 import './GameCard.css'
-import { OddOneOutIcon, SequenceIcon, ChainLinkIcon, ZeroInIcon } from './GameIcons'
+import { OddOneOutIcon, SequenceIcon, ChainLinkIcon, ZeroInIcon, KnotIcon } from './GameIcons'
 
 const iconComponents = {
   'odd-one-out': OddOneOutIcon,
   'sequence':    SequenceIcon,
   'chain-link':  ChainLinkIcon,
   'zero-in':     ZeroInIcon,
+  'knot':        KnotIcon,
 }
 
 function GameCard({ game }) {

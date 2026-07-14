@@ -35,4 +35,13 @@ export const games = [
     tags: ['Trivia', 'Daily'],
     url: 'https://balexandr.github.io/zero_in',
   },
+  {
+    id: 'knot',
+    title: 'Knot',
+    description: 'Find the word that follows three clues to form a compound word. New puzzle daily.',
+    icon: '🪢',
+    status: 'active',
+    tags: ['Words', 'Daily'],
+    url: 'https://balexandr.github.io/knot',
+  },
 ]

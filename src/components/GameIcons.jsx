@@ -50,6 +50,36 @@ export function ChainLinkIcon({ size = 40 }) {
   );
 }
 
+// Knot — overhand knot, one continuous rope
+export function KnotIcon({ size = 40 }) {
+  const C = '#e0932a';
+  return (
+    <svg viewBox="0 0 48 48" width={size} height={size} aria-hidden="true">
+      <defs>
+        <mask id="knot-hub-km">
+          <rect width="48" height="48" fill="white" />
+          <ellipse cx="19" cy="31" rx="5.5" ry="4" fill="black" transform="rotate(35 19 31)" />
+        </mask>
+      </defs>
+      <path
+        d="M 11 44 C 12 40 14 36 16 32"
+        fill="none" stroke={C} strokeWidth="4.5" strokeLinecap="round"
+        mask="url(#knot-hub-km)"
+      />
+      <path
+        d="M 16 32
+           C 12 26 8 16 14 8
+           C 20 0 32 2 36 10
+           C 40 18 38 28 34 32
+           C 30 36 24 36 20 32
+           C 18 28 20 28 24 32
+           C 28 36 34 42 37 44"
+        fill="none" stroke={C} strokeWidth="4.5" strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 // Zero In — radar crosshair target
 export function ZeroInIcon({ size = 40 }) {
   return (
