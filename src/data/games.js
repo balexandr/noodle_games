@@ -29,7 +29,7 @@ export const games = [
   {
     id: 'zero-in',
     title: 'Zero In',
-    description: 'Five classified clues. One target. Identify it before the intel runs out.',
+    description: 'Five classified clues, one hidden target. The earlier you guess right, the higher your score.',
     icon: '🎯',
     status: 'active',
     tags: ['Trivia', 'Daily'],
@@ -43,5 +43,14 @@ export const games = [
     status: 'active',
     tags: ['Words', 'Daily'],
     url: 'https://balexandr.github.io/knot',
+  },
+  {
+    id: 'pathways',
+    title: 'Pathways',
+    description: 'Connect matching colored pairs with a single line and fill every cell. New grid daily.',
+    icon: '⚡',
+    status: 'active',
+    tags: ['Logic', 'Daily'],
+    url: 'https://balexandr.github.io/pathways',
   },
 ]
