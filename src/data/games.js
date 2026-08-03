@@ -53,4 +53,13 @@ export const games = [
     tags: ['Logic', 'Daily'],
     url: 'https://balexandr.github.io/pathways',
   },
+  {
+    id: 'sprout',
+    title: 'Sprout',
+    description: 'A crossword that grows as you solve it — only the seed word shows at first, and each answer sprouts its hidden neighbors into view.',
+    icon: '🌱',
+    status: 'active',
+    tags: ['Words', 'Daily'],
+    url: 'https://balexandr.github.io/sprout',
+  },
 ]
