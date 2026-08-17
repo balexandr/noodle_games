@@ -62,4 +62,13 @@ export const games = [
     tags: ['Words', 'Daily'],
     url: 'https://balexandr.github.io/sprout',
   },
+  {
+    id: 'mirror',
+    title: 'Mirror',
+    description: 'Bend a beam of light with mirrors to hit the target. Fewer mirrors, more stars. New puzzle daily.',
+    icon: '🔷',
+    status: 'active',
+    tags: ['Logic', 'Daily'],
+    url: 'https://balexandr.github.io/mirror',
+  },
 ]
