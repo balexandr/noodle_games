@@ -65,7 +65,7 @@ export const games = [
   {
     id: 'mirror',
     title: 'Mirror',
-    description: 'Bend a beam of light with mirrors to hit the target. Fewer mirrors, more stars. New puzzle daily.',
+    description: 'Place mirrors, then fire the beam blind. Five fires to hit every target. New puzzle daily.',
     icon: '🔷',
     status: 'active',
     tags: ['Logic', 'Daily'],
