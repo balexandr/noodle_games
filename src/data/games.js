@@ -6,7 +6,7 @@ export const games = [
     icon: '🔢',
     status: 'active',
     tags: ['Logic', 'Daily'],
-    url: 'https://balexandr.github.io/sequence',
+    url: 'https://sequence.noodlegames.co',
   },
   {
     id: 'odd-one-out',
@@ -15,7 +15,7 @@ export const games = [
     icon: '🎯',
     status: 'active',
     tags: ['Words', 'Daily'],
-    url: 'https://balexandr.github.io/odd_one_out',
+    url: 'https://oddoneout.noodlegames.co',
   },
   {
     id: 'chain-link',
@@ -24,7 +24,7 @@ export const games = [
     icon: '🔗',
     status: 'active',
     tags: ['Words', 'Daily'],
-    url: 'https://balexandr.github.io/chain_link',
+    url: 'https://chainlink.noodlegames.co',
   },
   {
     id: 'zero-in',
@@ -33,7 +33,7 @@ export const games = [
     icon: '🎯',
     status: 'active',
     tags: ['Trivia', 'Daily'],
-    url: 'https://balexandr.github.io/zero_in',
+    url: 'https://zeroin.noodlegames.co',
   },
   {
     id: 'knot',
@@ -42,7 +42,7 @@ export const games = [
     icon: '🪢',
     status: 'active',
     tags: ['Words', 'Daily'],
-    url: 'https://balexandr.github.io/knot',
+    url: 'https://knot.noodlegames.co',
   },
   {
     id: 'pathways',
@@ -51,7 +51,7 @@ export const games = [
     icon: '⚡',
     status: 'active',
     tags: ['Logic', 'Daily'],
-    url: 'https://balexandr.github.io/pathways',
+    url: 'https://pathways.noodlegames.co',
   },
   {
     id: 'sprout',
@@ -60,7 +60,7 @@ export const games = [
     icon: '🌱',
     status: 'active',
     tags: ['Words', 'Daily'],
-    url: 'https://balexandr.github.io/sprout',
+    url: 'https://sprout.noodlegames.co',
   },
   {
     id: 'mirror',
@@ -69,6 +69,6 @@ export const games = [
     icon: '🔷',
     status: 'active',
     tags: ['Logic', 'Daily'],
-    url: 'https://balexandr.github.io/mirror',
+    url: 'https://mirror.noodlegames.co',
   },
 ]
