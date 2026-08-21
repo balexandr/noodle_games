@@ -1,10 +1,73 @@
+import { useEffect } from 'react'
 import GameCard from '../components/GameCard'
 import { ToiletIcon, JoystickIcon, RocketIcon } from '../components/FeatureIcons'
 import { games } from '../data/games'
 import './Home.css'
 
+// Injected client-side (not baked into index.html) so it can never drift out
+// of sync with `games` the way a hand-written JSON-LD blob in the HTML
+// would the next time a game gets added or retired. Google's crawler runs
+// JS and picks up script tags added this way, same as it does for the
+// visible content on this SPA — this isn't a new assumption for this site.
+function useStructuredData(gameList) {
+  useEffect(() => {
+    const active = gameList.filter((g) => g.status === 'active')
+    const scripts = [
+      {
+        id: 'ld-website',
+        data: {
+          '@context': 'https://schema.org',
+          '@type': 'WebSite',
+          name: 'NoodleGames',
+          url: 'https://noodlegames.co/',
+          description: 'A new puzzle every day, free in your browser — word games, logic puzzles, and brain teasers.',
+        },
+      },
+      {
+        id: 'ld-gamelist',
+        data: {
+          '@context': 'https://schema.org',
+          '@type': 'ItemList',
+          itemListElement: active.map((g, i) => ({
+            '@type': 'ListItem',
+            position: i + 1,
+            item: {
+              '@type': 'VideoGame',
+              name: g.title,
+              description: g.description,
+              url: g.url,
+              genre: g.tags,
+              applicationCategory: 'Game',
+              operatingSystem: 'Any (Web Browser)',
+              offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+            },
+          })),
+        },
+      },
+    ]
+
+    const created = scripts.map(({ id, data }) => {
+      let el = document.getElementById(id)
+      const isNew = !el
+      if (isNew) {
+        el = document.createElement('script')
+        el.type = 'application/ld+json'
+        el.id = id
+        document.head.appendChild(el)
+      }
+      el.textContent = JSON.stringify(data)
+      return { el, isNew }
+    })
+
+    return () => {
+      created.forEach(({ el, isNew }) => { if (isNew) el.remove() })
+    }
+  }, [gameList])
+}
+
 function Home() {
   const todaysGame = games.findLast(g => g.status === 'active') || games.find(g => g.status === 'active')
+  useStructuredData(games)
 
   return (
     <>
