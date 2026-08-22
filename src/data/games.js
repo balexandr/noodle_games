@@ -71,4 +71,13 @@ export const games = [
     tags: ['Logic', 'Daily'],
     url: 'https://mirror.noodlegames.co',
   },
+  {
+    id: 'realm',
+    title: 'Realm',
+    description: 'Place one crown in every row, column, and colored region — no two may touch. New puzzle daily.',
+    icon: '👑',
+    status: 'active',
+    tags: ['Logic', 'Daily'],
+    url: 'https://realm.noodlegames.co',
+  },
 ]
