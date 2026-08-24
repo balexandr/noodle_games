@@ -50,7 +50,7 @@ export const games = [
   {
     id: 'sprout',
     title: 'Sprout',
-    description: 'A crossword that grows as you solve it. Only the seed word shows at first, and each answer sprouts its hidden neighbors into view.',
+    description: 'A crossword that grows as you solve it. Seed word first, rest sprouts in. New puzzle daily.',
     status: 'active',
     tags: ['Words', 'Daily'],
     url: 'https://sprout.noodlegames.co',
@@ -66,7 +66,7 @@ export const games = [
   {
     id: 'realm',
     title: 'Realm',
-    description: 'Place one crown in every row, column, and colored region — no two may touch. New puzzle daily.',
+    description: 'Place one crown in every row, column, and colored region. No two may touch. New puzzle daily.',
     status: 'active',
     tags: ['Logic', 'Daily'],
     url: 'https://realm.noodlegames.co',
