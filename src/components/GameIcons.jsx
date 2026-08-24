@@ -120,3 +120,85 @@ export function ZeroInIcon({ size = 40 }) {
     </svg>
   );
 }
+
+// Sprout — stem with two unfurling leaves, growing from a seed
+export function SproutIcon({ size = 40 }) {
+  const green = '#22c55e';
+  const light = '#4ade80';
+  return (
+    <svg viewBox="0 0 48 48" width={size} height={size} aria-hidden="true">
+      <path
+        d="M 24 42 C 24 32 22 26 24 18"
+        fill="none" stroke={green} strokeWidth="3.4" strokeLinecap="round"
+      />
+      <path
+        d="M 24 26 C 16 26 11 21 12 13 C 20 13 25 18 24 26 Z"
+        fill={green}
+      />
+      <path
+        d="M 24 19 C 31 19 36 15 36 8 C 29 8 24 12 24 19 Z"
+        fill={light}
+      />
+      <ellipse cx="24" cy="43.5" rx="4.5" ry="3" fill={light} />
+    </svg>
+  );
+}
+
+// Mirror — faceted diamond shard with a bouncing light beam
+export function MirrorIcon({ size = 40 }) {
+  const C = '#6366f1';
+  const BEAM = '#a5b4fc';
+  return (
+    <svg viewBox="0 0 48 48" width={size} height={size} aria-hidden="true">
+      <path
+        d="M 24 4 L 44 24 L 24 44 L 4 24 Z"
+        fill="none" stroke={C} strokeWidth="4" strokeLinejoin="round"
+      />
+      <path
+        d="M 12 27 L 20 17 L 26 32 L 36 15"
+        fill="none" stroke={BEAM} strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+// Realm — jeweled crown
+export function RealmIcon({ size = 40 }) {
+  const teal = '#14b8a6';
+  const light = '#2dd4bf';
+  return (
+    <svg viewBox="0 0 48 48" width={size} height={size} aria-hidden="true">
+      <rect x="8" y="30" width="32" height="8" rx="2" fill={teal} />
+      <path
+        d="M 8 30 L 11 14 L 18 24 L 24 10 L 30 24 L 37 14 L 40 30 Z"
+        fill={light}
+      />
+      <circle cx="11" cy="14" r="2.6" fill={teal} />
+      <circle cx="24" cy="10" r="2.8" fill={teal} />
+      <circle cx="37" cy="14" r="2.6" fill={teal} />
+    </svg>
+  );
+}
+
+// Squint — dot cluster, dim at the corners, bright at the center (rebus focus)
+export function SquintIcon({ size = 40 }) {
+  const C = '#06b6d4';
+  const dots = [
+    { cx: 8,  cy: 8,  r: 5,   o: 0.2 },
+    { cx: 40, cy: 8,  r: 5,   o: 0.2 },
+    { cx: 8,  cy: 40, r: 5,   o: 0.2 },
+    { cx: 40, cy: 40, r: 5,   o: 0.2 },
+    { cx: 24, cy: 8,  r: 5.5, o: 0.5 },
+    { cx: 8,  cy: 24, r: 5.5, o: 0.5 },
+    { cx: 40, cy: 24, r: 5.5, o: 0.5 },
+    { cx: 24, cy: 40, r: 5.5, o: 0.5 },
+    { cx: 24, cy: 24, r: 6.5, o: 1.0 },
+  ];
+  return (
+    <svg viewBox="0 0 48 48" width={size} height={size} aria-hidden="true">
+      {dots.map((d, i) => (
+        <circle key={i} cx={d.cx} cy={d.cy} r={d.r} fill={C} opacity={d.o} />
+      ))}
+    </svg>
+  );
+}
