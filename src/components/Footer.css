@@ -23,6 +23,18 @@
   font-size: 0.875rem;
 }
 
+.footer-privacy-link {
+  display: inline-block;
+  margin-top: 0.6rem;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  text-decoration: underline;
+}
+
+.footer-privacy-link:hover {
+  color: var(--color-primary);
+}
+
 .footer-copyright {
   margin-top: 0.75rem;
   color: var(--color-text-muted);
