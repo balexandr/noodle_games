@@ -15,8 +15,10 @@ A collection of quick, fun mini games you can play in your browser. No accounts,
 | 🪢 Knot | Find the word that follows three clues to form a compound word. New puzzle daily. | Live |
 | ⚡ Pathways | Connect matching colored pairs with a single line and fill every cell. New grid daily. | Live |
 | 🌱 Sprout | A crossword that grows as you solve it — only the seed word shows at first, and each answer sprouts its hidden neighbors into view. | Live |
+| 🪞 Mirror | Place mirrors to bend a light beam onto its target — the beam stays hidden until you commit to a shot. | Live |
+| 👑 Realm | Place one crown in every row, column, and colored region. No two may touch, not even diagonally. | Live |
 
-Each game lives in its own repo (`sequence`, `odd_one_out`, `chain_link`, `zero_in`, `knot`, `pathways`, `sprout`), listed here via `src/data/games.js`.
+Each game lives in its own repo (`sequence`, `odd_one_out`, `chain_link`, `zero_in`, `knot`, `pathways`, `sprout`, `mirror`, `realm`), listed here via `src/data/games.js`.
 
 ## Dev Setup
 
