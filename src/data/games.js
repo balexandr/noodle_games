@@ -71,4 +71,12 @@ export const games = [
     tags: ['Logic', 'Daily'],
     url: 'https://realm.noodlegames.co',
   },
+  {
+    id: 'tandem',
+    title: 'Tandem',
+    description: 'Click two words that pair up, in order, before the clock runs out. Every match buys more time. One attempt daily.',
+    status: 'active',
+    tags: ['Words', 'Daily'],
+    url: 'https://tandem.noodlegames.co',
+  },
 ]
