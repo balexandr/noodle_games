@@ -1,5 +1,5 @@
 import './GameCard.css'
-import { OddOneOutIcon, SequenceIcon, ChainLinkIcon, ZeroInIcon, KnotIcon, PathwaysIcon, SproutIcon, MirrorIcon, RealmIcon, SquintIcon } from './GameIcons'
+import { OddOneOutIcon, SequenceIcon, ChainLinkIcon, ZeroInIcon, KnotIcon, PathwaysIcon, SproutIcon, MirrorIcon, RealmIcon, SquintIcon, TandemIcon } from './GameIcons'
 
 const iconComponents = {
   'odd-one-out': OddOneOutIcon,
@@ -12,6 +12,7 @@ const iconComponents = {
   'mirror':      MirrorIcon,
   'realm':       RealmIcon,
   'squint':      SquintIcon,
+  'tandem':      TandemIcon,
 }
 
 function GameCard({ game }) {

@@ -180,6 +180,20 @@ export function RealmIcon({ size = 40 }) {
   );
 }
 
+// Tandem — two tiles bridged by a spark where they match
+export function TandemIcon({ size = 40 }) {
+  const base = '#84cc16';
+  const bright = '#a3e635';
+  return (
+    <svg viewBox="0 0 48 48" width={size} height={size} aria-hidden="true">
+      <rect x="4" y="12" width="16" height="24" rx="4" fill={base} />
+      <rect x="28" y="12" width="16" height="24" rx="4" fill={bright} />
+      <line x1="20" y1="24" x2="28" y2="24" stroke={bright} strokeWidth="3" strokeLinecap="round" />
+      <circle cx="24" cy="24" r="3" fill={bright} />
+    </svg>
+  );
+}
+
 // Squint — dot cluster, dim at the corners, bright at the center (rebus focus)
 export function SquintIcon({ size = 40 }) {
   const C = '#06b6d4';
