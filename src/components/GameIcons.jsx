@@ -180,7 +180,7 @@ export function RealmIcon({ size = 40 }) {
   );
 }
 
-// Tandem — two tiles bridged by a spark where they match
+// Tandem: two tiles bridged by a spark where they match
 export function TandemIcon({ size = 40 }) {
   const base = '#84cc16';
   const bright = '#a3e635';
