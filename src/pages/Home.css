@@ -255,3 +255,31 @@
   margin: 0.35rem 0 0;
   font-size: 1rem;
 }
+
+.sort-toggle {
+  display: inline-flex;
+  gap: 0.25rem;
+  margin-top: 1rem;
+  padding: 0.25rem;
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-full);
+}
+
+.sort-toggle__btn {
+  border: none;
+  background: none;
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sort-toggle__btn--active {
+  background: var(--gradient-primary);
+  color: white;
+}

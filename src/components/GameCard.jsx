@@ -1,5 +1,6 @@
 import './GameCard.css'
 import { OddOneOutIcon, SequenceIcon, ChainLinkIcon, ZeroInIcon, KnotIcon, PathwaysIcon, SproutIcon, MirrorIcon, RealmIcon, SquintIcon, TandemIcon } from './GameIcons'
+import RatingStars from './RatingStars'
 
 const iconComponents = {
   'odd-one-out': OddOneOutIcon,
@@ -15,12 +16,12 @@ const iconComponents = {
   'tandem':      TandemIcon,
 }
 
-function GameCard({ game }) {
+function GameCard({ game, rating, onRate }) {
   const isActive = game.status === 'active' && game.url
   const IconComponent = iconComponents[game.id]
 
-  const card = (
-    <div className={`game-card ${isActive ? 'game-card--active' : 'game-card--soon'}`}>
+  const body = (
+    <>
       <div className="game-card__icon">
         {IconComponent ? <IconComponent /> : game.icon}
       </div>
@@ -33,18 +34,28 @@ function GameCard({ game }) {
           <span key={tag} className={`tag tag--${tag.toLowerCase()}`}>{tag}</span>
         ))}
       </div>
-    </div>
+    </>
   )
 
-  if (isActive) {
-    return (
-      <a href={game.url} target="_blank" rel="noopener noreferrer" className="game-card-link">
-        {card}
-      </a>
-    )
-  }
-
-  return card
+  return (
+    <div className={`game-card ${isActive ? 'game-card--active' : 'game-card--soon'}`}>
+      {isActive ? (
+        <a href={game.url} target="_blank" rel="noopener noreferrer" className="game-card__link">
+          {body}
+        </a>
+      ) : (
+        body
+      )}
+      {isActive && (
+        <RatingStars
+          avg={rating?.avg ?? 0}
+          count={rating?.count ?? 0}
+          myRating={rating?.mine ?? 0}
+          onRate={(value) => onRate(game.id, value)}
+        />
+      )}
+    </div>
+  )
 }
 
 export default GameCard

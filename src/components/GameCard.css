@@ -1,7 +1,9 @@
-.game-card-link {
+.game-card__link {
   text-decoration: none;
   color: inherit;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .game-card {

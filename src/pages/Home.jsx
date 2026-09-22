@@ -1,7 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import GameCard from '../components/GameCard'
 import { ToiletIcon, JoystickIcon, RocketIcon } from '../components/FeatureIcons'
 import { games } from '../data/games'
+import { useGameRatings } from '../hooks/useGameRatings'
 import './Home.css'
 
 // Injected client-side (not baked into index.html) so it can never drift out
@@ -69,6 +70,22 @@ function Home() {
   const todaysGame = games.findLast(g => g.status === 'active') || games.find(g => g.status === 'active')
   useStructuredData(games)
 
+  const { stats, mine, submitRating } = useGameRatings()
+  const [sortBy, setSortBy] = useState('newest')
+
+  const sortedGames = useMemo(() => {
+    if (sortBy !== 'rated') return games
+    return [...games].sort((a, b) => {
+      const ra = stats[a.id]
+      const rb = stats[b.id]
+      if (!ra && !rb) return 0
+      if (!ra) return 1
+      if (!rb) return -1
+      if (rb.avg !== ra.avg) return rb.avg - ra.avg
+      return rb.count - ra.count
+    })
+  }, [sortBy, stats])
+
   return (
     <>
       {/* Hero */}
@@ -118,10 +135,31 @@ function Home() {
           <div className="section-header">
             <h2 className="section-title">All Games</h2>
             <p className="section-subtitle">Pick a game, any game.</p>
+            <div className="sort-toggle" role="group" aria-label="Sort games">
+              <button
+                type="button"
+                className={`sort-toggle__btn ${sortBy === 'newest' ? 'sort-toggle__btn--active' : ''}`}
+                onClick={() => setSortBy('newest')}
+              >
+                Newest
+              </button>
+              <button
+                type="button"
+                className={`sort-toggle__btn ${sortBy === 'rated' ? 'sort-toggle__btn--active' : ''}`}
+                onClick={() => setSortBy('rated')}
+              >
+                Top Rated
+              </button>
+            </div>
           </div>
           <div className="games__grid">
-            {games.map(game => (
-              <GameCard key={game.id} game={game} />
+            {sortedGames.map(game => (
+              <GameCard
+                key={game.id}
+                game={game}
+                rating={{ avg: stats[game.id]?.avg ?? 0, count: stats[game.id]?.count ?? 0, mine: mine[game.id] ?? 0 }}
+                onRate={submitRating}
+              />
             ))}
           </div>
         </div>
