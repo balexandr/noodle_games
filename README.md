@@ -17,8 +17,17 @@ A collection of quick, fun mini games you can play in your browser. No accounts,
 | 🌱 Sprout | A crossword that grows as you solve it — only the seed word shows at first, and each answer sprouts its hidden neighbors into view. | Live |
 | 🪞 Mirror | Place mirrors to bend a light beam onto its target — the beam stays hidden until you commit to a shot. | Live |
 | 👑 Realm | Place one crown in every row, column, and colored region. No two may touch, not even diagonally. | Live |
+| 🤝 Tandem | Click two words that pair up, in order, before the clock runs out. Every match buys more time. One attempt daily. | Live |
+| 🔐 Dial | Spin each wheel's small set of candidate letters until they spell the one real word hidden in the cryptex. New puzzle daily. | Live |
 
-Each game lives in its own repo (`sequence`, `odd_one_out`, `chain_link`, `zero_in`, `knot`, `pathways`, `sprout`, `mirror`, `realm`), listed here via `src/data/games.js`.
+Each game lives in its own repo (`sequence`, `odd_one_out`, `chain_link`, `zero_in`, `knot`, `pathways`, `sprout`, `mirror`, `realm`, `tandem`, `dial`), listed here via `src/data/games.js`.
+
+## Ratings
+
+Every game card has a 1–5 star rating widget (Supabase-backed, one
+rating per device via a random device id, no account needed). The
+**Newest / Top Rated** toggle above the grid re-sorts the games by
+their live average. See `RATINGS_DESIGN.md` for the schema and setup.
 
 ## Dev Setup
 
