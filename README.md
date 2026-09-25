@@ -2,7 +2,7 @@
 
 **[noodlegames.co](https://noodlegames.co)**
 
-A collection of quick, fun mini games you can play in your browser. No accounts, no downloads — just pick a game and play.
+A collection of quick, fun mini games you can play in your browser. No accounts, no downloads, just pick a game and play.
 
 ## Games
 
@@ -14,8 +14,8 @@ A collection of quick, fun mini games you can play in your browser. No accounts,
 | 🎯 Zero In | Five classified clues, one hidden target. The earlier you guess right, the higher your score. | Live |
 | 🪢 Knot | Find the word that follows three clues to form a compound word. New puzzle daily. | Live |
 | ⚡ Pathways | Connect matching colored pairs with a single line and fill every cell. New grid daily. | Live |
-| 🌱 Sprout | A crossword that grows as you solve it — only the seed word shows at first, and each answer sprouts its hidden neighbors into view. | Live |
-| 🪞 Mirror | Place mirrors to bend a light beam onto its target — the beam stays hidden until you commit to a shot. | Live |
+| 🌱 Sprout | A crossword that grows as you solve it: only the seed word shows at first, and each answer sprouts its hidden neighbors into view. | Live |
+| 🪞 Mirror | Place mirrors to bend a light beam onto its target. The beam stays hidden until you commit to a shot. | Live |
 | 👑 Realm | Place one crown in every row, column, and colored region. No two may touch, not even diagonally. | Live |
 | 🤝 Tandem | Click two words that pair up, in order, before the clock runs out. Every match buys more time. One attempt daily. | Live |
 | 🔐 Dial | Spin each wheel's small set of candidate letters until they spell the one real word hidden in the cryptex. New puzzle daily. | Live |
