@@ -23,7 +23,11 @@
   cursor: pointer;
 }
 
-.game-card--active:hover {
+/* Scoped to the link itself, not the whole card, so hovering the rating
+   stars (a sibling below the link, not inside it) doesn't lift/shift the
+   card under the cursor — that shift was landing an intended star-click on
+   the link instead, sending first-time raters to the game by accident. */
+.game-card--active:has(.game-card__link:hover) {
   border-color: var(--color-primary);
   transform: translateY(-4px);
   box-shadow: 0 12px 32px rgba(255, 107, 53, 0.15);
