@@ -79,4 +79,12 @@ export const games = [
     tags: ['Words', 'Daily'],
     url: 'https://tandem.noodlegames.co',
   },
+  {
+    id: 'dial',
+    title: 'Dial',
+    description: 'Spin each wheel\'s small set of candidate letters until they spell the one real word hidden in the cryptex. New puzzle daily.',
+    status: 'active',
+    tags: ['Words', 'Daily'],
+    url: 'https://dial.noodlegames.co',
+  },
 ]
