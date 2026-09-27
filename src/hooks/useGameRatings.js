@@ -2,10 +2,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase, getDeviceId } from '../lib/supabase'
 
 // stats: { [gameId]: { avg: number, count: number } }
-// mine:  { [gameId]: number } — the current visitor's own submitted rating
 export function useGameRatings() {
   const [stats, setStats] = useState({})
-  const [mine, setMine] = useState({})
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
@@ -15,30 +13,20 @@ export function useGameRatings() {
     }
 
     let cancelled = false
-    const deviceId = getDeviceId()
 
     async function load() {
-      const [statsRes, mineRes] = await Promise.all([
-        supabase.from('game_rating_stats').select('game_id, avg_rating, rating_count'),
-        supabase.from('game_ratings').select('game_id, rating').eq('device_id', deviceId),
-      ])
+      const { data, error } = await supabase
+        .from('game_rating_stats')
+        .select('game_id, avg_rating, rating_count')
 
       if (cancelled) return
 
-      if (!statsRes.error && statsRes.data) {
+      if (!error && data) {
         const next = {}
-        for (const row of statsRes.data) {
+        for (const row of data) {
           next[row.game_id] = { avg: Number(row.avg_rating), count: row.rating_count }
         }
         setStats(next)
-      }
-
-      if (!mineRes.error && mineRes.data) {
-        const next = {}
-        for (const row of mineRes.data) {
-          next[row.game_id] = row.rating
-        }
-        setMine(next)
       }
 
       setLoaded(true)
@@ -51,8 +39,6 @@ export function useGameRatings() {
   const submitRating = useCallback(async (gameId, rating) => {
     if (!supabase) return
     const deviceId = getDeviceId()
-
-    setMine((prev) => ({ ...prev, [gameId]: rating }))
 
     const { error } = await supabase
       .from('game_ratings')
@@ -71,5 +57,5 @@ export function useGameRatings() {
     }
   }, [])
 
-  return { stats, mine, loaded, submitRating }
+  return { stats, loaded, submitRating }
 }

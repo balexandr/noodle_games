@@ -85,16 +85,20 @@ carry anything sensitive.
 - New `src/lib/supabase.js`: creates the client from
   `import.meta.env.VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`.
 - New `src/hooks/useGameRatings.js`: on mount, fetches all rows from
-  `game_rating_stats` (avg + count per game) and the visitor's own rows
-  from `game_ratings` (so their own stars show as filled-in immediately).
-  Exposes `submitRating(gameId, rating)` which upserts
+  `game_rating_stats` (avg + count per game). Exposes
+  `submitRating(gameId, rating)` which upserts
   `{ game_id, device_id, rating }` on conflict `(game_id, device_id)`, then
-  refetches just that game's stats row.
-- New `src/components/RatingStars.jsx` (+ `.css`): 5-star control. Shows
-  the live average (e.g. "4.3 (12)") when not hovered/focused, shows the
-  visitor's own pending selection on hover, fills in their submitted
-  rating after they click. Renders nothing until stats have loaded (no
-  layout jump from a skeleton).
+  refetches just that game's stats row. (An earlier version of this hook
+  also fetched the visitor's own past rows from `game_ratings`, to fill
+  the stars to the visitor's own rating instead of the average — dropped
+  once the design changed to always show the average, see below.)
+- New `src/components/RatingStars.jsx` (+ `.css`): 5-star control. Resting
+  state fills stars to the community average, rounded to a whole star, so
+  a visitor gets an at-a-glance read on the score without reading the text
+  summary. Hovering (about to submit your own rating) temporarily replaces
+  that with a live preview of the value under the cursor; an unrated game
+  shows empty stars. Renders nothing until stats have loaded (no layout
+  jump from a skeleton).
 
 ## GameCard changes
 

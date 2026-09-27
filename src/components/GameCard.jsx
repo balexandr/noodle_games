@@ -51,7 +51,6 @@ function GameCard({ game, rating, onRate }) {
         <RatingStars
           avg={rating?.avg ?? 0}
           count={rating?.count ?? 0}
-          myRating={rating?.mine ?? 0}
           onRate={(value) => onRate(game.id, value)}
         />
       )}

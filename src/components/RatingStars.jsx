@@ -16,7 +16,7 @@ function Star({ filled, onClick, onMouseEnter, onMouseLeave }) {
   )
 }
 
-function RatingStars({ avg, count, myRating, onRate }) {
+function RatingStars({ avg, count, onRate }) {
   const [hovered, setHovered] = useState(0)
 
   const handleClick = (value, e) => {
@@ -25,10 +25,12 @@ function RatingStars({ avg, count, myRating, onRate }) {
     onRate(value)
   }
 
-  // Only fills to the visitor's own hover/submitted rating, never the
-  // aggregate average — filling stars to `avg` here would make a visitor
-  // who's never rated look like they already gave it 5 stars.
-  const displayValue = hovered || myRating || 0
+  // Resting state shows the community average (rounded to a whole star) so
+  // a visitor gets an at-a-glance read on the score without hunting for the
+  // text summary. Hovering — about to submit your own rating — temporarily
+  // replaces that with a live preview of the value under the cursor, and an
+  // unrated game just shows empty stars.
+  const displayValue = hovered || (count > 0 ? Math.round(avg) : 0)
 
   return (
     <div

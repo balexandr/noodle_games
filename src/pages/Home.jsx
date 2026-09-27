@@ -70,7 +70,7 @@ function Home() {
   const todaysGame = games.findLast(g => g.status === 'active') || games.find(g => g.status === 'active')
   useStructuredData(games)
 
-  const { stats, mine, submitRating } = useGameRatings()
+  const { stats, submitRating } = useGameRatings()
   const [sortBy, setSortBy] = useState('newest')
 
   const sortedGames = useMemo(() => {
@@ -157,7 +157,7 @@ function Home() {
               <GameCard
                 key={game.id}
                 game={game}
-                rating={{ avg: stats[game.id]?.avg ?? 0, count: stats[game.id]?.count ?? 0, mine: mine[game.id] ?? 0 }}
+                rating={{ avg: stats[game.id]?.avg ?? 0, count: stats[game.id]?.count ?? 0 }}
                 onRate={submitRating}
               />
             ))}
