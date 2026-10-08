@@ -87,4 +87,12 @@ export const games = [
     tags: ['Words', 'Daily'],
     url: 'https://dial.noodlegames.co',
   },
+  {
+    id: 'weave',
+    title: 'Weave',
+    description: 'Trace every word hidden in the grid. Every letter belongs to exactly one word, no leftovers, no theme. New puzzle daily.',
+    status: 'active',
+    tags: ['Words', 'Daily'],
+    url: 'https://weave.noodlegames.co',
+  },
 ]

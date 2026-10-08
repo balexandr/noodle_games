@@ -19,8 +19,9 @@ A collection of quick, fun mini games you can play in your browser. No accounts,
 | 👑 Realm | Place one crown in every row, column, and colored region. No two may touch, not even diagonally. | Live |
 | 🤝 Tandem | Click two words that pair up, in order, before the clock runs out. Every match buys more time. One attempt daily. | Live |
 | 🔐 Dial | Spin each wheel's small set of candidate letters until they spell the one real word hidden in the cryptex. New puzzle daily. | Live |
+| 🧶 Weave | Trace every word hidden in the grid. Every letter belongs to exactly one word, no leftovers, no theme. New puzzle daily. | Live |
 
-Each game lives in its own repo (`sequence`, `odd_one_out`, `chain_link`, `zero_in`, `knot`, `pathways`, `sprout`, `mirror`, `realm`, `tandem`, `dial`), listed here via `src/data/games.js`.
+Each game lives in its own repo (`sequence`, `odd_one_out`, `chain_link`, `zero_in`, `knot`, `pathways`, `sprout`, `mirror`, `realm`, `tandem`, `dial`, `weave`), listed here via `src/data/games.js`.
 
 ## Ratings
 
