@@ -68,6 +68,26 @@
   line-height: 1.5;
 }
 
+.game-card__leader {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+}
+
+.game-card__leader-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--color-primary);
+}
+
+.game-card__leader-text strong {
+  color: var(--color-text);
+  letter-spacing: 0.04em;
+}
+
 .game-card__tags {
   display: flex;
   gap: 0.5rem;

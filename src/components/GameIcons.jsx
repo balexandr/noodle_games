@@ -230,3 +230,21 @@ export function DialIcon({ size = 40 }) {
     </svg>
   );
 }
+
+// Weave: interlocking threads crossing through a grid of cells
+export function WeaveIcon({ size = 40 }) {
+  const amber = '#f59e0b';
+  const light = '#fbbf24';
+  return (
+    <svg viewBox="0 0 48 48" width={size} height={size} aria-hidden="true">
+      <path
+        d="M 6 14 C 16 14 16 34 26 34 C 36 34 36 14 44 14"
+        fill="none" stroke={amber} strokeWidth="4" strokeLinecap="round"
+      />
+      <path
+        d="M 6 34 C 14 34 16 14 24 14 C 34 14 34 34 44 34"
+        fill="none" stroke={light} strokeWidth="4" strokeLinecap="round"
+      />
+    </svg>
+  );
+}

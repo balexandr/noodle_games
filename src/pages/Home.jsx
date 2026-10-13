@@ -3,6 +3,7 @@ import GameCard from '../components/GameCard'
 import { ToiletIcon, JoystickIcon, RocketIcon } from '../components/FeatureIcons'
 import { games } from '../data/games'
 import { useGameRatings } from '../hooks/useGameRatings'
+import { useLeaderboardLeaders } from '../hooks/useLeaderboardLeaders'
 import './Home.css'
 
 // Injected client-side (not baked into index.html) so it can never drift out
@@ -71,6 +72,8 @@ function Home() {
   useStructuredData(games)
 
   const { stats, submitRating } = useGameRatings()
+  const activeGameIds = useMemo(() => games.filter(g => g.status === 'active').map(g => g.id), [])
+  const { leaders } = useLeaderboardLeaders(activeGameIds)
   const [sortBy, setSortBy] = useState('newest')
 
   const sortedGames = useMemo(() => {
@@ -159,6 +162,7 @@ function Home() {
                 game={game}
                 rating={{ avg: stats[game.id]?.avg ?? 0, count: stats[game.id]?.count ?? 0 }}
                 onRate={submitRating}
+                leader={leaders[game.id]}
               />
             ))}
           </div>
