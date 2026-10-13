@@ -1,9 +1,19 @@
 # Leaderboards — Design Doc
 
-Started 2026-10-12. Goal: a daily top-10 leaderboard inside each game
+Started 2026-10-12. Goal: a daily top-3 leaderboard inside each game
 (arcade-style, type 3 initials if you make the cut) plus a per-game
 "today's leader" card on the hub homepage. Confirmed with user during
 scoping:
+
+- Cutoff is top 3, not top 10 — these are low-traffic daily puzzles,
+  a 10-slot board would rarely fill and a "top 3" bar reads as more
+  exclusive/meaningful at this scale. Changed 2026-10-13 after the
+  pilots shipped with 10; touches the `submit_score` RPC (two literal
+  3s, see "Data model" below) and `wouldQualify` in `leaderboard.js`
+  (see "Client" below) — no schema change, no re-seeding needed.
+- The initials prompt auto-opens the moment a qualifying score is
+  ready — it does not wait for the player to click "today's
+  leaderboard" first. See "Client" below.
 
 - Hub shows each game's own leaderboard leader, not one unified
   cross-game ranking. No new cross-subdomain identity needed as a
@@ -71,9 +81,9 @@ create policy "anyone can read leaderboard game config" on leaderboard_games
 
 grant select on leaderboard_games to anon;
 
--- Today's top 10 for one game. Self-capping: a row is only ever
--- inserted when fewer than 10 rows already beat it (see submit_score
--- below), so this table can never hold more than 10 rows per
+-- Today's top 3 for one game. Self-capping: a row is only ever
+-- inserted when fewer than 3 rows already beat it (see submit_score
+-- below), so this table can never hold more than 3 rows per
 -- (game_id, date) without needing a cleanup job.
 create table leaderboard_scores (
   game_id text not null references leaderboard_games(game_id),
@@ -124,12 +134,14 @@ insert into leaderboard_blocked_initials (word) values
 
 -- The only way a score can ever be written. Validates everything the
 -- client can't be trusted to validate itself, then only persists if
--- the score currently ranks in today's top 10 — evicting the current
+-- the score currently ranks in today's top 3 — evicting the current
 -- worst row if the board is already full. See the comment above the
 -- eviction step below for why that step exists; an earlier draft of
--- this function rejected a worse newcomer once 10 better rows existed
+-- this function rejected a worse newcomer once N better rows existed
 -- but never evicted anyone for a BETTER newcomer, so the table could
--- grow past 10 forever. Caught before this went live anywhere.
+-- grow past the cutoff forever. Caught before this went live anywhere.
+-- Cutoff itself changed from 10 to 3 on 2026-10-13 (see top of doc) —
+-- just the two literal 3s below, nothing structural.
 --
 -- Also checks the caller's OWN existing score (if any) upfront: an
 -- earlier draft skipped this and relied only on the ON CONFLICT ...
@@ -200,7 +212,8 @@ begin
 
   -- Rows for OTHER devices today (my own existing row, if any, is
   -- never competition for myself — on conflict below just updates it
-  -- in place, so it can never push the total over 10 on its own).
+  -- in place, so it can never push the total over the cutoff on its
+  -- own).
   select count(*) into v_other_count
   from leaderboard_scores
   where game_id = p_game_id and date = v_date and device_id <> p_device_id;
@@ -211,21 +224,21 @@ begin
     and (case when v_game.sort_direction = 'asc' then score < p_score
               else score > p_score end);
 
-  -- 10 others already beat this score outright — no room, full stop.
-  if v_better_count >= 10 then
+  -- 3 others already beat this score outright — no room, full stop.
+  if v_better_count >= 3 then
     return query select false, null::int;
     return;
   end if;
 
-  -- Board already has 10 other rows and this score beats at least one
+  -- Board already has 3 other rows and this score beats at least one
   -- of them (guaranteed by the check above) — evict the single worst
-  -- of those 10 so the total stays at 10 after this insert, instead
-  -- of growing to 11. The negate-for-desc trick turns "worst" into a
+  -- of those 3 so the total stays at 3 after this insert, instead
+  -- of growing to 4. The negate-for-desc trick turns "worst" into a
   -- plain "order by ... desc limit 1" regardless of this game's
   -- direction: for asc (lower wins) the highest raw score is worst;
   -- for desc (higher wins) the lowest raw score is worst, i.e. the
   -- highest negated score.
-  if v_other_count >= 10 then
+  if v_other_count >= 3 then
     delete from leaderboard_scores
     where ctid = (
       select ctid from leaderboard_scores
@@ -259,23 +272,23 @@ grant execute on function submit_score(text, uuid, numeric, numeric, text, text)
 
 **Accepted edge case:** exact ties don't count as "better" (strict `<`
 / `>`), so a pile of tied scores at the cutoff can let a table briefly
-exceed 10 rows. Not worth the extra complexity of real rank-with-ties
+exceed 3 rows. Not worth the extra complexity of real rank-with-ties
 logic for a casual daily board — if it ever actually happens enough to
 notice, revisit then.
 
-**Why this table stays capped at 10 rows without a cleanup job:** a
-new entrant is only ever inserted when fewer than 10 OTHER rows beat
-it, and if the board is already full (10 others), the single worst of
-those 10 is evicted first — so the total can never exceed 10. No cron
-job, no `delete where rank > 10` needed.
+**Why this table stays capped at 3 rows without a cleanup job:** a
+new entrant is only ever inserted when fewer than 3 OTHER rows beat
+it, and if the board is already full (3 others), the single worst of
+those 3 is evicted first — so the total can never exceed 3. No cron
+job, no `delete where rank > 3` needed.
 
 ## Client
 
 - No new tables or RPCs needed on the read side — the client fetches
   `leaderboard_games` (one row, cached) and `leaderboard_scores` for
-  `(game_id, today)` (at most 10 rows), then sorts client-side using
+  `(game_id, today)` (at most 3 rows), then sorts client-side using
   the fetched `sort_direction`/`tiebreak_direction`. Simpler than a
-  second "sorted view" function in Postgres for 10 rows.
+  second "sorted view" function in Postgres for 3 rows.
 - Each pilot game gets its own `src/lib/supabase.js` (same shape as
   the hub's) and `.env` / `.env.example`, since leaderboard writes
   happen inside the game, not the hub. The anon key is safe to ship
@@ -283,14 +296,23 @@ job, no `delete where rank > 10` needed.
   what actually gate access, not keeping the key secret.
 - `src/utils/leaderboard.js` per game: `fetchTodayBoard(gameId)`,
   `wouldQualify(score, board)` (client-side pre-check, purely for UX —
-  decides whether to show the initials prompt at all), and
+  decides whether to show the initials prompt at all), `findMyRow`
+  (skip re-prompting a device that's already on today's board), and
   `submitScore(gameId, { score, tiebreak, scoreDisplay, initials })`
   (calls the RPC, authoritative).
-- End-of-game flow: compute score via that game's own
-  `toLeaderboardScore()` → `wouldQualify` against the already-fetched
-  board → if yes, show 3-letter initials entry, call `submitScore` →
-  render the returned board (or refetch) with the new row highlighted.
-  If no, skip straight to showing today's board.
+- End-of-game flow (**changed 2026-10-13**): the win effect itself —
+  the same one that already calls `recordGame`/`recordTodayShare` —
+  computes the score via that game's own `toLeaderboardScore()`,
+  fetches today's board, and checks `wouldQualify` (and `!findMyRow`).
+  If it qualifies, it sets `showLeaderboard = true` right there, so
+  the initials prompt appears on its own the moment the win screen's
+  reveal delay finishes — the player never has to click "today's
+  leaderboard" to discover they made the cut. A non-qualifying win
+  stays quiet; the leaderboard is still reachable via the header
+  button and the win screen's own link, just not auto-opened. First
+  draft of this feature only opened the panel on a manual click,
+  which a live player reported losing the "congrats" moment to —
+  fixed same day.
 
 ## Setup (manual, one-time, on the user)
 
@@ -314,7 +336,7 @@ access, not something to script blind.
 ## Explicitly out of scope for this pass
 
 - Cross-game unified ranking (scoped out — per-game dashboard only).
-- "My rank" display when a score doesn't make the top 10.
+- "My rank" display when a score doesn't make the top 3.
 - Any moderation/admin view for submitted initials.
 - Expanding the profanity blocklist beyond the starter list above.
 - Rolling out past the two pilot games, until the pilot's been live
