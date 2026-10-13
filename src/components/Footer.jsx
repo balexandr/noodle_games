@@ -11,7 +11,7 @@ function Footer() {
         </span>
         <p className="footer-tagline">Fresh games, served daily.</p>
         <Link to="/privacy" className="footer-privacy-link">Privacy Policy</Link>
-        <p className="footer-copyright">© {new Date().getFullYear()} NoodleGames. All rights reserved.</p>
+        <p className="footer-copyright">© {new Date().getFullYear()} NoodleGames.co</p>
       </div>
     </footer>
   )
