@@ -81,6 +81,10 @@
   height: 14px;
   flex-shrink: 0;
   color: var(--color-primary);
+  /* The trophy glyph's visual weight sits in its top half (wide cup,
+     thin stem/base), so bounding-box centering against the text line
+     reads as floating above it — nudge down to compensate. */
+  margin-top: 2px;
 }
 
 .game-card__leader-text strong {
