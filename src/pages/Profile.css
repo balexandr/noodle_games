@@ -1,0 +1,229 @@
+.profile-page {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 1.5rem 5rem;
+}
+
+.profile-card {
+  max-width: 480px;
+  width: 100%;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+}
+
+.profile-card h1 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.profile-loading {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.profile-signedout {
+  text-align: center;
+}
+
+.profile-sub {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+.profile-signin-btn {
+  display: inline-block;
+  padding: 0.7rem 1.5rem;
+  border-radius: var(--radius-md);
+  background: var(--gradient-primary);
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.profile-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.profile-name-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.profile-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.profile-link-btn {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 0.78rem;
+  text-align: left;
+  padding: 0;
+  width: fit-content;
+}
+
+.profile-link-btn:hover {
+  color: var(--color-primary);
+}
+
+.profile-name-form {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.profile-name-input {
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--color-border);
+  font-size: 0.95rem;
+  width: 160px;
+}
+
+.profile-save-btn {
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+
+.profile-save-btn:disabled {
+  opacity: 0.5;
+}
+
+.profile-error {
+  color: #dc2626;
+  font-size: 0.78rem;
+  margin: 0.2rem 0 0;
+}
+
+.profile-section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  margin: 1.5rem 0 0.6rem;
+}
+
+.profile-avatar-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.5rem;
+}
+
+.profile-avatar-btn {
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-avatar-active {
+  border-color: var(--color-primary);
+}
+
+.profile-avatar-btn:disabled {
+  opacity: 0.6;
+}
+
+.profile-empty {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.profile-history {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.profile-history-row {
+  display: grid;
+  grid-template-columns: 72px 1fr auto auto;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+}
+
+.profile-history-row:nth-child(odd) {
+  background: var(--color-bg);
+}
+
+.profile-history-date {
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.75rem;
+}
+
+.profile-history-game {
+  font-weight: 600;
+}
+
+.profile-history-outcome {
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.profile-history-won {
+  color: #16a34a;
+}
+
+.profile-history-lost {
+  color: #dc2626;
+}
+
+.profile-history-score {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+}
+
+.profile-back {
+  display: inline-block;
+  margin-top: 1.5rem;
+  color: var(--color-text-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.profile-back:hover {
+  color: var(--color-primary);
+}
+
+@media (max-width: 420px) {
+  .profile-history-row {
+    grid-template-columns: 1fr auto;
+    row-gap: 0.1rem;
+  }
+
+  .profile-history-date {
+    grid-column: 1 / -1;
+  }
+}

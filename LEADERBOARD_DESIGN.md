@@ -89,7 +89,7 @@ create table leaderboard_scores (
   game_id text not null references leaderboard_games(game_id),
   date date not null,
   device_id uuid not null,
-  initials text not null check (initials ~ '^[A-Z0-9]{3}$'),
+  initials text not null check (initials ~ '^[A-Z0-9]{2,3}$'), -- was {3} exactly, loosened 2026-10-15
   score numeric not null,
   tiebreak numeric,
   score_display text not null,
@@ -187,8 +187,11 @@ begin
   end if;
 
   v_initials := upper(regexp_replace(coalesce(p_initials, ''), '[^a-zA-Z0-9]', '', 'g'));
-  if length(v_initials) <> 3 then
-    raise exception 'initials must be exactly 3 letters/digits';
+  -- 2 or 3, not exactly 3 (loosened 2026-10-15) — the blocklist below
+  -- only has 3-letter entries, so a 2-letter input just never matches
+  -- any of them; not worth a separate 2-letter list for this.
+  if length(v_initials) not in (2, 3) then
+    raise exception 'initials must be 2 or 3 letters/digits';
   end if;
   if exists (select 1 from leaderboard_blocked_initials where word = v_initials) then
     raise exception 'initials not allowed';
@@ -341,3 +344,321 @@ access, not something to script blind.
 - Expanding the profanity blocklist beyond the starter list above.
 - Rolling out past the two pilot games, until the pilot's been live
   and stable for a few days.
+
+---
+
+# All-Time Leaderboard (accounts) — Design Doc
+
+Started 2026-10-13, after the daily top-3/top-10 board above was already
+live suite-wide. A self-chosen recovery-code identity was mocked up and
+rejected — "people won't remember a code" — in favor of real accounts.
+Confirmed with user during scoping:
+
+- Per-game, not cross-game (same reasoning as the daily board: fires vs.
+  time vs. hints aren't comparable without a normalized point system,
+  which is still explicitly out of scope).
+- Google + GitHub sign-in only for now (Apple costs $99/yr and needs
+  more setup — revisit if iOS players actually ask for it).
+- **An account is required to submit to the all-time board at all** —
+  this is the actual anti-spam mechanism (stops one person from
+  flooding the board with fifty fake device identities). It is
+  **not** an anti-cheat mechanism for score forgery itself: a client
+  can still fabricate a plausible score and submit it as a real,
+  signed-in account, same hard limit the daily board already accepted
+  (no server-authoritative game engine to validate a score against).
+  Documented here so it's a known tradeoff, not a surprise later.
+- All-time board shows a **player-chosen display name**, tied to the
+  account — not the 3-letter initials the daily board uses. Initials
+  stay exactly as they are today, for players who never sign in.
+- Top 10 cutoff (vs. the daily board's top 3) — reads as a rarer,
+  bigger badge since it never resets.
+
+## The cross-subdomain problem
+
+Supabase Auth's default session storage is `localStorage`, which is
+per-origin — a session on `mirror.noodlegames.co` would not be visible
+on `knot.noodlegames.co`. Every game is its own subdomain, so signing
+in separately on all 11 isn't acceptable.
+
+**Fix: centralize the OAuth dance on the hub, share the result via a
+cookie.** Exact same trick `leaderboard.js`'s `INITIALS_COOKIE` and
+`shareAll.js`'s cross-subdomain roster already use — a cookie with
+`Domain=.noodlegames.co` is readable from every subdomain, unlike
+localStorage.
+
+1. A game's "Sign in" button navigates to
+   `https://noodlegames.co/login?return=<current game origin>`.
+2. The hub runs Supabase's normal OAuth redirect flow
+   (`supabase.auth.signInWithOAuth({ provider: 'google' | 'github' })`).
+3. On return from the provider, the hub's own callback page has a live
+   Supabase session (access token + refresh token). It writes both into
+   one cookie (`noodle_session`, JSON, `Domain=.noodlegames.co`,
+   `Secure`, `SameSite=Lax` — not `HttpOnly`, since the browser JS
+   client needs to read it to rehydrate the session) and redirects back
+   to `return`.
+4. Each game's `src/lib/supabase.js` gets a tiny addition: a custom
+   `storage` adapter passed to `createClient` that reads/writes that
+   cookie instead of `localStorage`, so `supabase.auth.getSession()`
+   on any subdomain picks up the session the hub wrote. Supabase's
+   client already supports a custom storage object for exactly this
+   kind of case — no fork of the library needed.
+5. Only **one** redirect URI needs registering with Google and GitHub
+   (`https://noodlegames.co/auth/callback`), not eleven.
+
+Sign-out needs to clear the same cookie and should itself live on the
+hub for the same reason sign-in does (one place that can see and clear
+the `.noodlegames.co`-scoped cookie cleanly) — each game's "sign out"
+button just navigates to `https://noodlegames.co/logout?return=<back>`.
+
+**Accepted tradeoff, stated plainly:** the session (access + refresh
+token) lives in a `.noodlegames.co`-scoped cookie readable by JS on
+any of the 11 subdomains, because every one of them is a static site
+with no backend of its own to hold it more privately (can't be
+`HttpOnly` — the browser client needs to read it to rehydrate the
+session). A stored-XSS bug on *any* one game could read this cookie
+and act as that signed-in user suite-wide, which is a bigger blast
+radius than today's device-id/initials cookie carries. The
+alternative (routing every authenticated write through a hidden-iframe
+postMessage bridge to the hub, so tokens never leave its origin) would
+close that gap but is real added complexity for a free, low-traffic
+puzzle suite that's already accepted client-side score forgery as a
+hard limit elsewhere in this doc. Going with the simpler shared-cookie
+approach; revisit only if this suite ever handles something more
+sensitive than puzzle scores.
+
+## Data model additions (Supabase / Postgres)
+
+```sql
+-- One row per signed-in player who's set a display name. Keyed by
+-- Supabase's own auth.users id — no separate "accounts" table needed,
+-- Supabase Auth already owns email/provider/identity.
+create table player_profiles (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  display_name text not null,
+  created_at timestamptz not null default now(),
+  constraint display_name_length check (char_length(display_name) between 3 and 20),
+  constraint display_name_charset check (display_name ~ '^[A-Za-z0-9 _-]+$')
+);
+
+-- Case-insensitive uniqueness so "Player1" and "player1" can't both exist.
+create unique index player_profiles_display_name_ci on player_profiles (lower(display_name));
+
+alter table player_profiles enable row level security;
+
+create policy "anyone can read display names" on player_profiles
+  for select using (true);
+
+grant select on player_profiles to anon, authenticated;
+
+-- Same blocklist table the daily board already has, reused here —
+-- checked as a substring match (a full display name has room to embed
+-- a blocked word a 3-letter-exact-match initials check wouldn't
+-- catch), not just an exact match.
+create or replace function set_display_name(p_display_name text)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_name text;
+begin
+  if auth.uid() is null then
+    raise exception 'must be signed in';
+  end if;
+
+  v_name := trim(p_display_name);
+  if char_length(v_name) < 3 or char_length(v_name) > 20 then
+    raise exception 'display name must be 3-20 characters';
+  end if;
+  if v_name !~ '^[A-Za-z0-9 _-]+$' then
+    raise exception 'display name has invalid characters';
+  end if;
+  if exists (
+    select 1 from leaderboard_blocked_initials b
+    where position(lower(b.word) in lower(v_name)) > 0
+  ) then
+    raise exception 'display name not allowed';
+  end if;
+
+  insert into player_profiles (user_id, display_name)
+  values (auth.uid(), v_name)
+  on conflict (user_id) do update set display_name = excluded.display_name;
+exception
+  when unique_violation then
+    raise exception 'that name is taken';
+end;
+$$;
+
+revoke all on function set_display_name(text) from public;
+grant execute on function set_display_name(text) to authenticated;
+
+-- All-time equivalent of leaderboard_scores — no `date` column (it
+-- never resets), keyed by (game_id, user_id) instead of
+-- (game_id, date, device_id). display_name is denormalized onto the
+-- row at submit time (same choice leaderboard_scores already made for
+-- initials) rather than joined from player_profiles at read time —
+-- simpler RLS, no join on every board fetch. A later name change only
+-- shows up once the player next submits an improving score, same
+-- staleness behavior the daily board already accepts for initials.
+create table leaderboard_alltime_games (
+  game_id text primary key references leaderboard_games(game_id),
+  sort_direction text not null check (sort_direction in ('asc', 'desc')),
+  tiebreak_direction text check (tiebreak_direction in ('asc', 'desc')),
+  min_score numeric not null,
+  max_score numeric not null
+);
+
+alter table leaderboard_alltime_games enable row level security;
+create policy "anyone can read all-time game config" on leaderboard_alltime_games
+  for select using (true);
+grant select on leaderboard_alltime_games to anon;
+
+create table leaderboard_alltime_scores (
+  game_id text not null references leaderboard_alltime_games(game_id),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  display_name text not null,
+  score numeric not null,
+  tiebreak numeric,
+  score_display text not null,
+  updated_at timestamptz not null default now(),
+  primary key (game_id, user_id)
+);
+
+alter table leaderboard_alltime_scores enable row level security;
+create policy "anyone can read all-time scores" on leaderboard_alltime_scores
+  for select using (true);
+grant select on leaderboard_alltime_scores to anon;
+-- No insert/update policy for anon or authenticated — same reasoning
+-- as the daily board, all writes go through the RPC below.
+
+-- Cutoff is 10, not 3 (see decision log above) — same eviction shape
+-- as submit_score, just no `date` dimension and gated on auth.uid().
+create or replace function submit_alltime_score(
+  p_game_id text,
+  p_score numeric,
+  p_tiebreak numeric,
+  p_score_display text
+)
+returns table (accepted boolean, rank int)
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_game leaderboard_alltime_games%rowtype;
+  v_display_name text;
+  v_existing_score numeric;
+  v_other_count int;
+  v_better_count int;
+begin
+  if auth.uid() is null then
+    raise exception 'must be signed in to submit to the all-time board';
+  end if;
+
+  select display_name into v_display_name from player_profiles where user_id = auth.uid();
+  if v_display_name is null then
+    raise exception 'must set a display name before submitting';
+  end if;
+
+  select * into v_game from leaderboard_alltime_games where game_id = p_game_id;
+  if not found then
+    raise exception 'unknown game_id: %', p_game_id;
+  end if;
+
+  if p_score < v_game.min_score or p_score > v_game.max_score then
+    raise exception 'score out of bounds for %: %', p_game_id, p_score;
+  end if;
+
+  select score into v_existing_score
+  from leaderboard_alltime_scores
+  where game_id = p_game_id and user_id = auth.uid();
+
+  if v_existing_score is not null and not (
+    case when v_game.sort_direction = 'asc' then p_score < v_existing_score
+         else p_score > v_existing_score end
+  ) then
+    return query select false, null::int;
+    return;
+  end if;
+
+  select count(*) into v_other_count
+  from leaderboard_alltime_scores
+  where game_id = p_game_id and user_id <> auth.uid();
+
+  select count(*) into v_better_count
+  from leaderboard_alltime_scores
+  where game_id = p_game_id and user_id <> auth.uid()
+    and (case when v_game.sort_direction = 'asc' then score < p_score
+              else score > p_score end);
+
+  if v_better_count >= 10 then
+    return query select false, null::int;
+    return;
+  end if;
+
+  if v_other_count >= 10 then
+    delete from leaderboard_alltime_scores
+    where ctid = (
+      select ctid from leaderboard_alltime_scores
+      where game_id = p_game_id and user_id <> auth.uid()
+      order by (case when v_game.sort_direction = 'asc' then score else -score end) desc
+      limit 1
+    );
+  end if;
+
+  insert into leaderboard_alltime_scores
+    (game_id, user_id, display_name, score, tiebreak, score_display)
+  values
+    (p_game_id, auth.uid(), v_display_name, p_score, p_tiebreak, p_score_display)
+  on conflict (game_id, user_id) do update
+    set score = excluded.score,
+        tiebreak = excluded.tiebreak,
+        score_display = excluded.score_display,
+        display_name = excluded.display_name,
+        updated_at = now()
+    where case when v_game.sort_direction = 'asc'
+            then excluded.score < leaderboard_alltime_scores.score
+            else excluded.score > leaderboard_alltime_scores.score end;
+
+  return query select true, (v_better_count + 1);
+end;
+$$;
+
+revoke all on function submit_alltime_score(text, numeric, numeric, text) from public;
+grant execute on function submit_alltime_score(text, numeric, numeric, text) to authenticated;
+```
+
+## Setup (manual, one-time, on the user)
+
+1. In Google Cloud Console, create an OAuth 2.0 Client ID (web
+   application). Authorized redirect URI:
+   `https://<your-supabase-project-ref>.supabase.co/auth/v1/callback`
+   (Supabase's own callback, not noodlegames.co's — Supabase sits in
+   front of the provider; the hub's `/auth/callback` is where
+   *Supabase* redirects back to afterward).
+2. In GitHub → Settings → Developer settings → OAuth Apps, create a new
+   app with the same Supabase callback URL as the "Authorization
+   callback URL".
+3. In the Supabase dashboard → Authentication → Providers, enable
+   Google and GitHub, pasting in each client id/secret from steps 1-2.
+4. In Supabase dashboard → Authentication → URL Configuration, add
+   `https://noodlegames.co/auth/callback` as an additional redirect URL
+   (this is the one the hub's own code will request after Supabase's
+   own OAuth handoff completes).
+5. Run the SQL above in the Supabase SQL editor (same project
+   everything else already lives in).
+6. Seed `leaderboard_alltime_games` once each game's scoring map is
+   confirmed — same values as `leaderboard_games` (sort_direction,
+   tiebreak_direction), just also present here.
+
+## Explicitly out of scope for this pass
+
+- Account settings/profile page beyond "set your display name once."
+- Display name history (changing it doesn't relabel past board rows
+  until the next improving submission, see note above).
+- Deleting an account or its all-time scores (would need a real
+  account-deletion flow — not built yet).
+- Linking a Google and a GitHub sign-in to the same person if they use
+  both (Supabase treats them as separate users unless email-linking is
+  explicitly configured — revisit if it comes up).
