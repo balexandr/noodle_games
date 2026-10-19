@@ -426,6 +426,28 @@ hard limit elsewhere in this doc. Going with the simpler shared-cookie
 approach; revisit only if this suite ever handles something more
 sensitive than puzzle scores.
 
+**Real bug hit 2026-10-16:** the first live sign-in (Google) silently
+never persisted at all — `document.cookie` came back completely empty
+after `/auth/callback`, so every subsequent request looked signed-out
+server-side (`set_display_name` failed with a genuine `42501 permission
+denied`, the same error an anonymous caller gets, confirmed via a
+direct RPC test). Root cause: the full Supabase session JSON —
+access/refresh tokens plus Google's `user_metadata` (avatar URL, full
+`identities` array) and a separate `provider_token` — exceeded a
+browser's ~4KB per-cookie ceiling. Browsers don't truncate an oversized
+cookie, they silently refuse to set it at all, so nothing was ever
+actually stored despite the page itself showing a signed-in UI off the
+in-memory session from the OAuth exchange. Fixed by trimming what
+`cookieAuthStorage.setItem` persists to just `access_token`,
+`refresh_token`, `expires_at`, `expires_in`, `token_type`, and a
+`user` object with only `id`/`aud`/`role`/`email` — none of the
+bulky provider metadata, which this app never reads anyway (Avatar.jsx
+and `player_profiles.display_name` replace it entirely). Ruled out
+first, before landing here: a JWT-signing-key mismatch (checked
+Settings → JWT Keys — current ECC/P-256 key healthy, legacy HS256 key
+correctly retained for in-flight tokens, nothing wrong there) and a
+stale PostgREST schema cache (reloaded it, no change).
+
 ## Data model additions (Supabase / Postgres)
 
 ```sql
