@@ -135,6 +135,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
 }
 
 .profile-avatar-active {
@@ -143,6 +144,7 @@
 
 .profile-avatar-btn:disabled {
   opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .profile-empty {
