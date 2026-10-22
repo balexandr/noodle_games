@@ -674,6 +674,53 @@ grant execute on function submit_alltime_score(text, numeric, numeric, text) to 
    confirmed — same values as `leaderboard_games` (sort_direction,
    tiebreak_direction), just also present here.
 
+## All-time board rolled out to Tandem: 2026-10-22
+
+User asked to extend the all-time board past the Mirror pilot, to
+"whichever games make the most sense," naming Tandem specifically.
+Tandem fits well: its score (pairs matched, 0-200 range per the
+existing `leaderboard_games` row) is genuinely skill-based and doesn't
+saturate quickly, same bar Mirror's fires-used metric already met.
+
+Replicated the exact Mirror pilot shape, byte-for-byte where the
+convention calls for it:
+- `src/lib/supabase.js`: same `cookieAuthStorage` adapter (without
+  this, a sign-in on the hub would never be visible to Tandem at all —
+  default Supabase session storage is per-origin localStorage).
+- `src/lib/auth.js`, `src/components/Avatar.jsx`: copied verbatim from
+  Mirror.
+- `src/utils/leaderboard.js`: added `ALLTIME_LEADERBOARD_SIZE`,
+  `fetchAllTimeBoard`, `findMyAllTimeRow`, `submitAllTimeScore` —
+  copied from Mirror's current (already try/catch-hardened) version.
+- `src/components/LeaderboardPanel.jsx` + `.module.css`: added the
+  Today/All-Time tabs and sign-in CTA, same as Mirror's redesign.
+- `src/App.jsx`: fire-and-forget `submitAllTimeScore` call alongside
+  the existing win-effect, same auto-submit-on-every-run pattern just
+  added to Mirror (no popup, no manual tab click needed — the RPC
+  already safely no-ops if the score isn't an improvement or isn't
+  top 10).
+
+Deliberately did NOT add `record_game_history` (the profile-page play
+log) to Tandem in this pass — that's a separate, still-open ask from
+an earlier turn, not part of "add the all-time leaderboard."
+
+**Still needs this run once in the Supabase SQL editor** (same
+one-time seed step as Mirror, per step 6 above):
+```sql
+insert into leaderboard_alltime_games (game_id, sort_direction, tiebreak_direction, min_score, max_score)
+values ('tandem', 'desc', 'asc', 0, 200);
+```
+
+**Candidates for a future rollout, not done yet**: any game whose
+score is genuinely skill-based and doesn't saturate quickly is a
+reasonable fit (same bar Mirror and Tandem both clear) — Knot, Realm,
+Pathways, Sprout, Zero In, Chain Link, Sequence, Dial, Weave. Odd One
+Out is the one clear exception: its per-attempt score is a solve-time
+float with THREE separate leaderboard tracks already (see that repo's
+own history), and layering an all-time board on top of all three at
+once is a bigger design question than a simple rollout — worth a
+dedicated decision, not a mechanical copy.
+
 ## Explicitly out of scope for this pass
 
 - Account settings/profile page beyond "set your display name once."
