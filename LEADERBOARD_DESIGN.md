@@ -270,8 +270,24 @@ end;
 $$;
 
 revoke all on function submit_score(text, uuid, numeric, numeric, text, text) from public;
-grant execute on function submit_score(text, uuid, numeric, numeric, text, text) to anon;
+grant execute on function submit_score(text, uuid, numeric, numeric, text, text) to anon, authenticated;
 ```
+
+**Real bug hit 2026-10-29:** this was originally granted to `anon`
+only, on the assumption that a daily-board submitter is always
+anonymous (device-id based). That broke for any device with a live
+Supabase Auth session in the shared `noodle_session` cookie (see
+"All-Time Leaderboard" below) — Mirror and Tandem's client reads that
+cookie (`cookieAuthStorage`), so once a device had ever signed in on
+either game, every subsequent Supabase call from that device ran as
+Postgres role `authenticated`, not `anon`, and `submit_score` had no
+grant for that role — a flat "permission denied for function",
+surfaced client-side as the generic save-failed message. Every other
+game's client never reads that cookie at all (plain
+`createClient(url, anonKey)`, no custom storage), so they never hit
+this. Fixed by granting `authenticated` too, above — a signed-in
+device submitting to the device-id-based daily board is legitimate,
+same as a signed-out one.
 
 **Accepted edge case:** exact ties don't count as "better" (strict `<`
 / `>`), so a pile of tied scores at the cutoff can let a table briefly
